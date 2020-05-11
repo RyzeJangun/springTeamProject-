@@ -1,0 +1,226 @@
+package com.example.test.controller.user;
+
+import java.io.File;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.example.test.model.user.dto.UserDTO;
+import com.example.test.service.like.Like_FundService;
+import com.example.test.service.user.UserService;
+
+@Controller
+@RequestMapping("user/*")
+public class UserController {
+
+	private static final Logger logger =LoggerFactory.getLogger(UserController.class);
+	
+	@Inject
+	UserService userService;
+	@Inject
+	BCryptPasswordEncoder pwEncoder;
+	@Inject
+	Like_FundService likeService;
+	@Resource(name="uploadPath_user")
+	String uploadPath_user;
+	
+	@RequestMapping("login.do")
+	public String login() {
+		return "user/login";
+	}
+	
+	@RequestMapping("join.do")
+	public String join() {
+		return "user/join";
+	}
+	
+	@RequestMapping("join2.do")
+	public String join2() {
+		return "user/join2";
+	}
+	
+	@RequestMapping("looking_for.do")
+	public String looking_for() {
+		return "user/looking_for";
+	}
+	@RequestMapping("update_passwd.do")
+	public String update_passwd() {
+		return "user/update_passwd";
+	}
+	
+	@RequestMapping("join_user.do")
+	public ModelAndView insert(@ModelAttribute UserDTO dto) {
+		logger.info(dto.getGender());
+		dto.setPasswd(pwEncoder.encode(dto.getPasswd()));
+		userService.insert(dto);
+		ModelAndView mav=new ModelAndView();
+		mav.addObject("dto",dto);
+		mav.setViewName("user/email_chk");
+		return mav;
+	}
+	
+	@RequestMapping(value = "id_chk", method = RequestMethod.GET)
+	@ResponseBody
+	public int idCheck(@RequestParam("userid") String userid) {
+		return userService.id_chk(userid);
+	}
+	
+	@RequestMapping("login_check.do")
+	public ModelAndView login(UserDTO dto, HttpSession session, ModelAndView mav) {
+		String result=userService.login(dto);
+		if(pwEncoder.matches(dto.getPasswd(), result)) {
+			session.setAttribute("userid", dto.getUserid());
+			mav.setViewName("redirect:/");
+			mav.addObject("message", "login");
+		}else {
+			mav.setViewName("user/login");
+			mav.addObject("message", "error");   
+		}  
+		return mav;
+	}
+	
+	@RequestMapping("email_chk.do")
+	public ModelAndView email_chk(String userid) {
+		userService.email_chk(userid);
+		ModelAndView mav=new ModelAndView();
+		mav.setViewName("user/email_chk_success");
+		mav.addObject("userid", userid);
+		return mav;
+	}
+	
+	@RequestMapping("logout.do")
+	public ModelAndView logout(HttpSession session, ModelAndView mav) {
+		session.invalidate();
+		mav.setViewName("redirect:/");
+		mav.addObject("message", "logout");
+		return mav;
+	}
+	
+	@RequestMapping("mypage.do")
+	public ModelAndView mypage(HttpSession session) {
+		ModelAndView mav=new ModelAndView();
+		String userid=(String)session.getAttribute("userid");
+		mav.addObject("dto", userService.user_view(userid));
+		mav.addObject("like_count", likeService.count(userid));
+		mav.setViewName("user/mypage");
+		return mav;
+	}
+	
+	@RequestMapping("look_id.do")
+	public ModelAndView look_id(@ModelAttribute UserDTO dto) {
+		int result=userService.look_id(dto);
+		ModelAndView mav=new ModelAndView();
+		if(result==1) {
+			mav.setViewName("user/look_id_success");
+			mav.addObject("dto", dto);
+			return mav;
+		}else {
+			mav.setViewName("redirect:/user/looking_for.do");
+			mav.addObject("message", "error");			
+		}		
+		return mav;
+	}
+	
+	@RequestMapping("look_pw.do")
+	public ModelAndView look_pw(@ModelAttribute UserDTO dto) {
+		int result=userService.look_pw(dto);
+		ModelAndView mav=new ModelAndView();
+		if(result==1) {
+			mav.setViewName("user/look_pw_success");
+			mav.addObject("dto", dto);
+			return mav;
+		}else {
+			mav.setViewName("redirect:/user/looking_for.do");
+			mav.addObject("message", "error");			
+		}		
+		return mav;
+	}
+	
+	@RequestMapping("update_user.do")
+	public ModelAndView update_user(@ModelAttribute UserDTO dto) {
+		System.out.println(dto);
+		userService.update_user(dto);
+		ModelAndView mav=new ModelAndView();
+		mav.addObject("dto", userService.user_view(dto.getUserid()));
+		mav.setViewName("user/mypage");
+		return mav;
+	}
+	
+	@RequestMapping("chk_passwd.do")
+	public ModelAndView chk_passwd(@RequestParam("passwd") String passwd,HttpSession session) {
+		String userid=(String)session.getAttribute("userid");
+		UserDTO dto=new UserDTO();
+		dto.setPasswd(passwd);
+		dto.setUserid(userid);
+		String result=userService.login(dto);
+		ModelAndView mav=new ModelAndView();
+		if(pwEncoder.matches(dto.getPasswd(), result)) {
+			mav.setViewName("user/update_passwd");
+			return mav;
+		}else {
+			mav.setViewName("redirect:/user/mypage.do");
+			mav.addObject("message", "error");
+			return mav;   
+		} 
+		
+	}
+	
+	@RequestMapping("update_pwd.do")
+	public ModelAndView update_pwd(@RequestParam("prw_pw") String pre_passwd, @RequestParam("passwd") String passwd, HttpSession session) {
+		System.out.println(pre_passwd);
+		System.out.println(passwd);
+		String userid=(String)session.getAttribute("userid");
+		UserDTO dto=new UserDTO();
+		dto.setPasswd(pre_passwd);
+		dto.setUserid(userid);
+		String result=userService.login(dto);
+		ModelAndView mav=new ModelAndView();
+		if(pwEncoder.matches(dto.getPasswd(), result)) {
+			dto.setPasswd(pwEncoder.encode(passwd));
+			userService.update_passwd(dto);;
+			mav.setViewName("user/mypage");
+			return mav;
+		}else {
+			mav.setViewName("user/update_passwd");
+			mav.addObject("message", "error");
+			return mav;   
+		}
+	}
+	
+	@RequestMapping("profile_img.do")
+	public ModelAndView profile_img(@RequestParam("file") MultipartFile file, HttpSession session) throws Exception{
+		String profile_img=file.getOriginalFilename();
+		profile_img = uploadFile(profile_img, file.getBytes());
+		String userid=(String)session.getAttribute("userid");
+		UserDTO dto=new UserDTO();
+		dto.setUserid(userid);
+		dto.setProfile_img(profile_img);
+		userService.profile_upload(dto);
+		ModelAndView mav=new ModelAndView();
+		mav.addObject("message","이미지 등록 완료");
+		mav.setViewName("redirect:/user/mypage.do");		 
+		return mav;
+	}
+	String uploadFile(String originalName, byte[] fileData) throws Exception {
+		UUID uid=UUID.randomUUID();
+		String savedName=uid.toString()+"_"+originalName;
+		File target=new File(uploadPath_user, savedName);
+		FileCopyUtils.copy(fileData, target);
+		return savedName;
+	}
+}
