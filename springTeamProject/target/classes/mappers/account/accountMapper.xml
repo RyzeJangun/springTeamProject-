@@ -17,4 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="view" resultType="com.example.test.model.account.dto.AccountDTO">
 		select * from user_account where cno=#{cno}
 	</select>
+	
+	<select id="charge_chk" resultType="String">
+	 select account_passwd,buy_passwd from user_account where userid=#{userid}
+	</select>
+	
+	<update id="moneyCharge">
+	 update user_account set account_money=account_money+#{charge_money} where userid=#{userid}
+	</update>
 </mapper>

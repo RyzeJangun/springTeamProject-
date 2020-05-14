@@ -14,7 +14,14 @@ public class AccountDTO {
 	private String buy_passwd;
 	private int primary_kard;
 	private Date append_date;
+	private int charge_money;
 	
+	public int getCharge_money() {
+		return charge_money;
+	}
+	public void setCharge_money(int charge_money) {
+		this.charge_money = charge_money;
+	}
 	public String getUsername() {
 		return username;
 	}
@@ -80,7 +87,7 @@ public class AccountDTO {
 		return "AccountDTO [cno=" + cno + ", userid=" + userid + ", username=" + username + ", account_bank="
 				+ account_bank + ", account_passwd=" + account_passwd + ", account_number=" + account_number
 				+ ", account_money=" + account_money + ", buy_passwd=" + buy_passwd + ", primary_kard=" + primary_kard
-				+ ", append_date=" + append_date + "]";
+				+ ", append_date=" + append_date + ", charge_money=" + charge_money + "]";
 	}
 
 	

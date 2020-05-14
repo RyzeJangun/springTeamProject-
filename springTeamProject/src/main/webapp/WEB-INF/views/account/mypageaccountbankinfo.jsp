@@ -43,6 +43,15 @@ p {
 	width: 100px;
 }
 </style>
+<script type="text/javascript">
+$(function() {
+	$("#btnCharge").click(function(){
+		var charge_money = $("#charge_money").val();
+		document.form1.action="${path}/account/moneyCharge.do";
+		document.form1.submit();
+	});
+});
+</script>
 </head>
 <body>
 	<%@ include file="../include/frame/site-header.jsp"%>
@@ -58,7 +67,7 @@ p {
 	<h3 class="banktitle">계좌정보</h3>
 	<div class="row justify-content-start">
 		<div class="col-sm-4">
-			<img alt="" src="${path}/img/bank_img/${list.account_bank}.png">
+			<img alt="" src="${path}/img/bank_img/${list.account_bank}.jpg">
 		</div>
 		<div class="col-sm-8 bank_contents">
 			<p>계좌번호 : <strong>${list.account_number}</strong></p>
@@ -78,7 +87,7 @@ p {
 	</div>
 </div>
 	<div class="modal fade" id="myModal" role="dialog">
-			<div class="modal-dialog">
+			<div class="modal-dialog" id="btnCharge">
 				<!-- Modal content-->
 				<div class="modal-content">
 					<div class="modal-header">
@@ -90,24 +99,24 @@ p {
 							<div class="container">
 							<div class="row">
 								<div class="col mt-4">
-									<label style="margin-bottom: 5px;">충전액</label><input type="text" class="form-control" id="account_number" name="account">
+									<label style="margin-bottom: 5px;">충전액</label><input type="text" class="form-control" name="charge_money">
 								</div>
 							</div>
 							<div class="row">
 								<div class="col mt-4">
-									<label style="margin-bottom: 5px;">계좌비밀번호</label><input type="password" class="form-control" id="account_number" name="account_passwd">
+									<label style="margin-bottom: 5px;">계좌비밀번호</label><input type="password" class="form-control" name="account_passwd">
 								</div>
 							</div>
 							<div class="row">
 								<div class="col mt-4">
-									<label style="margin-bottom: 5px;">결제비밀번호</label><input type="password" class="form-control" id="account_number" name="buy_passwd">
+									<label style="margin-bottom: 5px;">결제비밀번호</label><input type="password" class="form-control" name="buy_passwd">
 								</div>
 							</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-info">충전</button>
+						<button type="button" class="btn btn-info" id="btnCharge">충전</button>
 						<button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
 					</div>
 				</div>

@@ -3,6 +3,7 @@ package com.example.test.service.account;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,21 +16,21 @@ import com.example.test.model.user.dao.UserDAO;
 public class AccountServiceImpl implements AccountService {
 
 	@Inject
-	AccountDAO dao;
+	AccountDAO accountdao;
 	@Inject
 	UserDAO userdao;
 	
 	@Override
 	@Transactional
 	public void append_account(AccountDTO dto) {
-		dao.append_account(dto);
+		accountdao.append_account(dto);
 		String userid=dto.getUserid();
 		userdao.update_account(userid);
 	}
 
 	@Override
 	public List<AccountDTO> account_list(String userid) {
-		return dao.account_list(userid);
+		return accountdao.account_list(userid);
 	}
 
 	@Override
@@ -45,11 +46,21 @@ public class AccountServiceImpl implements AccountService {
 	}
 	@Override
 	public void buy_fund(int cno, int price) {
-		dao.buy_fund(cno, price);	
+		accountdao.buy_fund(cno, price);	
 	}
 	@Override
 	public AccountDTO view(int cno) {
-		return dao.view(cno);
+		return accountdao.view(cno);
+	}
+	
+	@Override
+	public void moneyCharge(AccountDTO dto) {	
+		accountdao.moneyCharge(dto);	
+	}
+	
+	@Override
+	public String charge_chk(AccountDTO dto) {
+		return accountdao.charge_chk(dto);
 	}
 
 }

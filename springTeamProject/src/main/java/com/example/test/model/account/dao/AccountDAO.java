@@ -2,6 +2,8 @@ package com.example.test.model.account.dao;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import com.example.test.model.account.dto.AccountDTO;
 
 public interface AccountDAO {
@@ -12,5 +14,8 @@ public interface AccountDAO {
 	public void update_account(AccountDTO dto);
 	public void buy_fund(int cno, int price);
 	public AccountDTO view(int cno);
+	public void moneyCharge(AccountDTO dto);
+	public String charge_chk(AccountDTO dto);
+	
 	
 }

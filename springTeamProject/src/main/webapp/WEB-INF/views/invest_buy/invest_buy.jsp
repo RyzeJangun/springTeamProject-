@@ -49,7 +49,7 @@ function okay(item, item_count, item_sum, min_fund, max_fund, account, limit, ap
 $(function() {
 	$("#btnBuy").click(function(){
 		var now_fund = $("#now_fund").val();
-		var account = $("#account").val();
+		var account_money = $("#account").val();
 		if(eval(now_fund) > eval(account)){
 			Swal.fire("투자 금액이 계좌 금액보다 많습니다.");
 			return;	
@@ -129,6 +129,7 @@ $(function() {
               		<label for="account_bank" class="text-black">결제 계좌 <span class="text-danger">*</span></label>
               		<select class="form-control" id="account_bank" name="account_bank" onchange="get_account()">
 										<c:forEach var="var" items="${user_account}">
+							<option value="">은행을 선택하세요.</option>
                 			<option value="${var.account_money}" name="${var.cno}">${var.account_bank}</option>
                 		</c:forEach>               		
 									</select>							
@@ -138,8 +139,8 @@ $(function() {
 							<div class="form-group row">
                 <div class="col-md-12">
               		<label for="account" class="text-black">계좌잔액<span class="text-danger">*</span></label>
-                	<input type="text" class="form-control" name="account" id="account" 
-                	value="" readonly>                	
+                	<input type="text" class="form-control" name="account" id="account"  
+                	value="${var.account_money}" readonly>                	
                 </div>
               </div>
               
@@ -170,6 +171,7 @@ $(function() {
                   <div class="input-group w-75">
                    <select class="form-control" id="coupon_check" name="coupon_check">
 										<c:forEach var="var" items="${coupon}">
+										<option value="">쿠폰을 선택하세요.</option>
                 			<option value="${var.discount}" name="${var.cou_no}">${var.coupon_name} 쿠폰</option>
                 		</c:forEach>               		
 									</select>		

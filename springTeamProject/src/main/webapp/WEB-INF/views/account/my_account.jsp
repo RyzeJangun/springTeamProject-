@@ -58,7 +58,7 @@
 				<div class="col-md-8">
 						<div class="jumbotron" style="background-color: #fff;">
 							<div class="mybank_page">
-								<img src="${path}/img/bank_img/${var.account_bank}.png"
+								<img src="${path}/img/bank_img/${var.account_bank}.jpg"
 									class="logo-img"><span class="banckname">[${var.account_bank}]
 									${var.account_number}</span>
 									<c:if test="${var.primary_kard == 1}">

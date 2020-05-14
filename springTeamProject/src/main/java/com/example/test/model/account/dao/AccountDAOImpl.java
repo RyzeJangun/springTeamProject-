@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -49,5 +50,15 @@ public class AccountDAOImpl implements AccountDAO {
 	public AccountDTO view(int cno) {
 		return session.selectOne("account.view", cno);
 	}
+	
+	@Override
+	public void moneyCharge(AccountDTO dto) {
+		session.update("account.moneyCharge",dto);
+	}
+
+    @Override
+    public String charge_chk(AccountDTO dto) {
+    	return session.selectOne("account.charge_chk",dto);
+    }
 
 }

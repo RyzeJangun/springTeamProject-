@@ -1,5 +1,7 @@
 package com.example.test.controller.account;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.test.model.account.dto.AccountDTO;
+import com.example.test.model.user.dto.UserDTO;
 import com.example.test.service.account.AccountService;
+
+import oracle.net.aso.s;
 
 
 @Controller
@@ -60,6 +65,22 @@ public class AccountContoller {
 		ModelAndView mav=new ModelAndView();
 		mav.setViewName("account/mypageaccountbankinfo");
 		mav.addObject("list", accountService.view(cno));
+		return mav;
+	}
+	
+	@RequestMapping("moneyCharge.do")
+	public ModelAndView moneyCharge(AccountDTO dto, HttpSession session,ModelAndView mav) {
+		String userid=(String)session.getAttribute("userid");
+		dto.setUserid(userid);
+		String result=accountService.charge_chk(dto);
+		if(pwEncoder.matches(dto.getAccount_passwd(), result) && pwEncoder.matches(dto.getBuy_passwd(), result)) {
+			accountService.moneyCharge(dto);
+			session.setAttribute("userid", dto.getUserid());
+			mav.setViewName("account/mypageaccountbankinfo.do");
+		}else {
+			mav.setViewName("account/mypageaccountbankinfo.do");
+			mav.addObject("message", "error");   
+		}  
 		return mav;
 	}
 	
