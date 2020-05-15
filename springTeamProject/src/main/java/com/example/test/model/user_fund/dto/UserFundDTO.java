@@ -15,7 +15,28 @@ public class UserFundDTO {
 	private int discount;
 	private int now_fund;
 	private Date buy_date;
+	private String title_img;//타이틀 이미지
+	private String title_img2;//타이틀 이미지2
+	private String title_img3;//타이틀 이미지3
 	
+	public String getTitle_img() {
+		return title_img;
+	}
+	public void setTitle_img(String title_img) {
+		this.title_img = title_img;
+	}
+	public String getTitle_img2() {
+		return title_img2;
+	}
+	public void setTitle_img2(String title_img2) {
+		this.title_img2 = title_img2;
+	}
+	public String getTitle_img3() {
+		return title_img3;
+	}
+	public void setTitle_img3(String title_img3) {
+		this.title_img3 = title_img3;
+	}
 	public int getDiscount() {
 		return discount;
 	}
@@ -86,7 +107,8 @@ public class UserFundDTO {
 	public String toString() {
 		return "UserFundDTO [u_bno=" + u_bno + ", bno=" + bno + ", userid=" + userid + ", grade=" + grade
 				+ ", project_name=" + project_name + ", company_name=" + company_name + ", unit=" + unit + ", count="
-				+ count + ", discount=" + discount + ", now_fund=" + now_fund + ", buy_date=" + buy_date + "]";
+				+ count + ", discount=" + discount + ", now_fund=" + now_fund + ", buy_date=" + buy_date
+				+ ", title_img=" + title_img + ", title_img2=" + title_img2 + ", title_img3=" + title_img3 + "]";
 	}
 	
 }

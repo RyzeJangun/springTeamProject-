@@ -113,13 +113,14 @@ img {
 							<h3>투자하신 프로젝트</h3>
 						</div>
 						<div class="invest_content">
-							<p>${var.project_name}</p>
+							<p>${var.project_name}</p><br>			
+							</p>
 						</div>
 						<div>
 							<p>기업명 : ${var.company_name}</p>
 							<p>구매액 : ${var.now_fund}</p>
 						</div>
-						<a href="#" class="wz button block primary">투자상품 보기</a>
+						<a href="${path}/fund/invest_detail/${var.bno}" class="wz button block primary">투자상품 보기</a>
 					</div>
 				</div>
 			</div>

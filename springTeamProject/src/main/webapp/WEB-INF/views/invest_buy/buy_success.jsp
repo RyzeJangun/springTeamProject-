@@ -129,7 +129,7 @@
 						</p>
 						<div class="invest_num">
 							<p>투자프로젝트 : ${dto.project_name}</p>					
-							<p>투자일자 : ${dto.buy_date}</p>
+							<p>투자일자 : 2020-05-15</p>
 						</div>
 					</form>
 				</div>
